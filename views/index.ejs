@@ -1,95 +1,9 @@
-<!DOCTYPE html>
-<html>
+<!-- 总模板layout.ejs中的视图，脚本，样式继承 -->
 
-<head>
-  <title>
-    <%= title %>
-  </title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link href="/javascripts/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<% layout('layout') -%>
 
-<body>
-  <h1>
-    <%= title %>
-  </h1>
-  <p>Welcome to
-    <%= title %>
-  </p>
   <form action="/logout" method="POST">
     <button id="btnLogout" type="submit">注销</button>
   </form>
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title" id="myModalLabel">提示</h4>
-        </div>
-        <div class="modal-body">
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <script src="/javascripts/jquery.min.js"></script>
-  <script src="/javascripts/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-  <script>
-    //$.ajax是jquery中ajax最底层的方法，get(),post(),getJson().getScript()是对ajax进行的封装
-    //$.ajax又是对原生JS对象XmlhttpRequest进行封装
-    //RESTful风格，有get，post，put，delete
-    //Jquery脚本库中没有封装put和delete方法，所以要调用这两种方法，只能使用$.ajax
-
-
-    //第一种方法，使用$.fn.extend(),此种调用方法，必须先选择一个元素，再调用方法
-    $.fn.extend({
-      why:function(){
-        console.log("why")
-      }
-    })
-    $(document).why()
-
-
-    //第二种方法，使用$.extend()
-    $.extend({
-      rua:function(){
-        console.log("rua")
-      }
-    })
-    $.rua()
-
-
-    // $("#btnLogout").click(function () {
-    //   $.ajax({
-    //     method: 'post',
-    //     url: "/logout",
-    //     data: {},
-    //     success: function (data) {
-    //       if (data.code != 200) {
-    //         $('#myModal .modal-body').text('注销异常')
-    //         $('#myModal').modal()
-    //         return
-    //       }
-
-    //       location.href = 'login'
-
-    //     },
-    //     error: function (err) {
-    //       $('#myModal .modal-body').text(err.message)
-    //       $('#myModal').modal()
-    //       return
-    //     }
-    //   })
-    // })
-  </script>
-</body>
-
-</html>
+  <!-- <button id="btnLogout" type="submit">注销</button> -->
+<% block('footer').append('<script src="/javascripts/index.js"></script>') %>
