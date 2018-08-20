@@ -59,7 +59,6 @@ router.post('/login', function (req, res, next) {
     }
 
     delete user.password;
-    console.log(user)
     req.session.user = user
     req.session.save();
     res.cookie("user",user)

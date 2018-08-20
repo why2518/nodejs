@@ -82,3 +82,6 @@ var activeLink = purl().data.attr.path;
 // $('.list-group a').parent().addClass('active')
 $(`.list-group a[href='${activeLink}']`).parent().addClass('active');
 $('.panel-title a').attr('aria-expanded', false);
+$('.panel-collapse').removeClass('in');
+$(`.list-group a[href='${activeLink}']`).closest('.panel-default').find('.panel-title a').attr('aria-expanded', true);
+$(`.list-group a[href='${activeLink}']`).closest('.panel-collapse').addClass('in');
