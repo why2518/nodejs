@@ -78,4 +78,19 @@ router.post('/login', function (req, res, next) {
 
 })
 
+
+router.post('/logout',function(req,res,next){
+  //以下是服务端渲染。利用ajax是客户端渲染
+  //清空cookie和session
+  req.session.user = null;
+  res.clearCookie('user')
+  // res.render('login',{title:"登录"})
+  //方法1，直接跳转login.ejs，缺点是代码和router.ger(/login)接口重复，并且在url上显示的是logout
+  res.redirect('/login')
+  //方法2,解决了方法1的2个缺点，推荐使用
+})
+
+
+
+
 module.exports = router;
