@@ -31,7 +31,8 @@
                     <div class="form-group">
                         <label for="loginName" class="col-sm-2 control-label">账号:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="loginName" placeholder="请输入账号">
+                            <input type="text" class="form-control" id="loginName" placeholder="请输入账号"
+                            >
                         </div>
                     </div>
                     <div class="form-group">
@@ -97,9 +98,13 @@
 
     </div>
     <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/jquery.cookie.min.js"></script>
     <script src="/javascripts/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script>
         $(function () {
+            if($.cookie('loginName')){
+                $('#loginName').val($.cookie('loginName'))
+            }
             $("#btnLogin").click(function (ev) {
                 ev.preventDefault();
                 var loginName = $.trim($("#loginName").val())

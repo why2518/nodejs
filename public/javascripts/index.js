@@ -83,5 +83,27 @@ var activeLink = purl().data.attr.path;
 $(`.list-group a[href='${activeLink}']`).parent().addClass('active');
 $('.panel-title a').attr('aria-expanded', false);
 $('.panel-collapse').removeClass('in');
-$(`.list-group a[href='${activeLink}']`).closest('.panel-default').find('.panel-title a').attr('aria-expanded', true);
-$(`.list-group a[href='${activeLink}']`).closest('.panel-collapse').addClass('in');
+
+console.log($(`.list-group a[href='${activeLink}']`).length)
+if($(`.list-group a[href='${activeLink}']`).length == 0){
+    $('.panel-collapse:first').addClass('in')
+}
+else{
+    $(`.list-group a[href='${activeLink}']`).closest('.panel-default').find('.panel-title a').attr('aria-expanded', true);
+    $(`.list-group a[href='${activeLink}']`).closest('.panel-collapse').addClass('in');
+}
+
+
+
+
+$('#logout').click(function(){
+        $.post('/logout', function (data) {
+        if (data.code != 200) {
+            $('#myModal .modal-body').text(data.message);
+            $('#myModal').modal();
+            return;
+        }
+        location.href = "/login";
+    }
+    )
+})

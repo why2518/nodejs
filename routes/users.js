@@ -63,6 +63,14 @@ router.post('/login', function (req, res, next) {
     req.session.save();
     res.cookie("user",user)
 
+    if(remember == 'true'){
+      res.cookie('loginName',user.loginName)
+    }
+    else{
+      res.clearCookie('loginName')
+    }
+
+
     if(result.length == 1){
       res.json({
         code:200,
@@ -84,15 +92,15 @@ router.post('/logout',function(req,res,next){
   req.session.user = null;
   res.clearCookie('user')
 
-  // res.json({
-  //   code:200,
-  //   message:"success"
-  // })
+  res.json({
+    code:200,
+    message:"success"
+  })
 
 
   // res.render('login',{title:"登录"})
   //方法1，直接跳转login.ejs，缺点是代码和router.ger(/login)接口重复，并且在url上显示的是logout
-  res.redirect('/login')
+  // res.redirect('/login')
   //方法2,解决了方法1的2个缺点，推荐使用
 
 

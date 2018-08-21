@@ -1,1 +1,159 @@
 <% layout('layout') -%>
+<style>
+
+</style>
+    <div class="panel-group" id="search" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="title">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#search" href="#collapseSearch" aria-expanded="true" aria-controls="collapseSearch">
+                        查询条件：
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseSearch" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="title">
+                <div class="panel-body" style="padding: 0;">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="name">姓名:</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="sex">性别:</label>
+                            <select name="" id="" class="form-control">
+                                <option value="">男</option>
+                                <option value="">女</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdayBegin">生日:</label>
+                            <input type="datetime" class="form-control" id="birthdayBegin">—
+                            <input type="datetime" class="form-control" id="birthdayEnd">
+                        </div>
+                        <div class="form-group">
+                            <label for="name">姓名:</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="sex">专业:</label>
+                            <select name="" id="" class="form-control">
+                                <option value="">男</option>
+                                <option value="">女</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">查询
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%
+        function formatDate(date, flag){
+            var date = new Date(date);
+            var y = date.getFullYear();
+            var M = date.getMonth() + 1;
+            var d = date.getDate();
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+        
+            M = M < 10 ? '0' + M : M.toString();
+            d = d < 10 ? '0' + d : d.toString();
+            h = h < 10 ? '0' + h : h.toString();
+            m = m < 10 ? '0' + m : m.toString();
+            s = s < 10 ? '0' + s : s.toString();
+        
+            return flag ? `${y}-${M}-${d} ${h}:${m}:${s}` : `${y}-${M}-${d}`
+        }
+    %>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>
+                    <input type="checkbox" clas="selectAll" title="全选">
+                </th>
+                <th>学号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>生日</th>
+                <th>身份证号码</th>
+                <th>院系</th>
+                <th>专业</th>
+                <th>班级</th>
+                <th>籍贯</th>
+                <th>家庭地址</th>
+                <th>QQ</th>
+                <th>手机</th>
+                <th>邮箱</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>创建人</th>
+                <th>修改时间</th>
+                <th>修改人</th>
+                <th>操作</th>
+            </tr>
+            <%for(var i = 0;i<students.length;i++){%>
+
+            <tr>
+                <td>
+                    <input type="checkbox" class="selectSingle">
+                </td>
+                <td><%= students[i].sno%></td>
+                <td><%= students[i].name%></td>
+                <td><%= students[i].sex%></td>
+                <td><%= formatDate(students[i].birthday,false)%></td>
+                <td><%= students[i].card%></td>
+                <td><%= students[i].majorName%></td>
+                <td><%= students[i].className%></td>
+                <td><%= students[i].departName%></td>
+                <td><%= students[i].nativePlace%></td>
+                <td><%= students[i].address%></td>
+                <td><%= students[i].qq%></td>
+                <td><%= students[i].phone%></td>
+                <td><%= students[i].email%></td>
+                <td>
+                    <%= students[i].status == 0?'正常':'删除'%>
+                </td>
+                <td><%= formatDate(students[i].createTime,true)%></td>
+                <td><%= students[i].createUserName%></td>
+                <td><%= students[i].updateTimer%></td>
+                <td><%= students[i].updateUserName%></td>
+                <td></td>
+            </tr>
+            <%}%>
+            
+            
+
+
+        </table>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li>
+                <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">1</a>
+            </li>
+            <li>
+                <a href="#">2</a>
+            </li>
+            <li>
+                <a href="#">3</a>
+            </li>
+            <li>
+                <a href="#">4</a>
+            </li>
+            <li>
+                <a href="#">5</a>
+            </li>
+            <li>
+                <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>

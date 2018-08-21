@@ -1,6 +1,15 @@
 $('#btnSave').click(function (e) {
     e.preventDefault();
-    // 客户端判断省略。
+    
+
+    var sno = $.trim($('#sno').val());
+    var name = $.trim
+    var birthday = $('#birthday').val()
+    if(!sno){
+        
+    }
+
+
     
     var data = {
         sno: $('#sno').val(),
@@ -18,6 +27,12 @@ $('#btnSave').click(function (e) {
         email: $('#email').val()
     }
     $.post('/students/add', data, function (d) {
-        console.log(d)
+        if(d.code != 200){
+            $('#myModal .modal-body').text(d.message);
+            $('#myModal').modal();
+            return;
+        }
+        
+        location.href = '/students/list'
     })
 })
