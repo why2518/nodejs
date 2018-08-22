@@ -113,13 +113,13 @@
                 <td><%= students[i].phone%></td>
                 <td><%= students[i].email%></td> -->
                 <td>
-                    <%= students[i].status == 0?'正常':'删除'%>
+                    <%- students[i].status == 0?'正常':'<span style="color: red">删除</span>'%>
                 </td>
                 <!-- <td><%= formatDate(students[i].createTime,true)%></td>
                 <td><%= students[i].createUserName%></td>
                 <td><%= students[i].updateTimer%></td>
                 <td><%= students[i].updateUserName%></td> -->
-                <td style="display: flex;justify-content:space-around"><a href="/students/edit/<%= students[i].id%>" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-pencil"></span>编辑</a><a href="/student/delete/<%= students[i].id%>" class="btn btn-success btn-xs" style="background-color: red;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
+                <td style="display: flex;justify-content:space-around"><a href="/students/edit/<%= students[i].id%>" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-pencil"></span>编辑</a><a href="/students/delete/<%= students[i].id%>" class="btn btn-success btn-xs" style="background-color: red;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
             </tr>
             <%}%>
             

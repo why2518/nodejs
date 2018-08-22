@@ -26,6 +26,7 @@ router.post('/login', function (req, res, next) {
 
   pool.query('select * from `users` where loginName = ? AND password = ? AND type = ?',[loginName,md5(password),type],function(err,result){
     var user = result[0]
+    console.log(user)
     if(err){
       res.json({
         code:202,
@@ -76,9 +77,6 @@ router.post('/login', function (req, res, next) {
         code:200,
         message:"成功"
       })
-
-
-
 
     }
   })

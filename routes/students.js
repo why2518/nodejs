@@ -25,9 +25,6 @@ router.get('/add', checkLogin, function (req, res, next) {
     })
 })
 
-
-
-
 router.post('/add', checkLogin, function (req, res, next) {
     var sno = req.body.sno;
     var name = req.body.name;
@@ -124,22 +121,23 @@ router.get('/list', checkLogin, function (req, res, next) {
     LEFT JOIN users u1 ON s.createUserId = u1.id
     LEFT JOIN users u2 ON s.updateUserId = u2.id
     `;
-    pool.query(sql,function(err,result){
-        if(err){
+    pool.query(sql, function (err, result) {
+        if (err) {
             res.json({
-                code:201,
-                message:"数据库操作失败"
+                code: 201,
+                message: "数据库操作失败"
             })
+            return
         }
-        res.render('students/list', { title: '学生列表',students:result})
+        res.render('students/list', { title: '学生列表', students: result })
     })
 })
 
-router.get('/edit/:id',checkLogin,function(req,res,next){
+router.get('/edit/:id', checkLogin, function (req, res, next) {
     //params = parameter
     var id = req.params.id
-    if(!id){
-        res.json({code:201,message:"id必须填写"})
+    if (!id) {
+        res.json({ code: 201, message: "id必须填写" })
         return;
     }
 
@@ -148,27 +146,27 @@ router.get('/edit/:id',checkLogin,function(req,res,next){
     SELECT * FROM majors where status = 0;
     SELECT * FROM classes where status = 0;
     SELECT * FROM departments where status = 0;
-    `,[id],function(err,result){
-        if(err){
-            res.json({
-                code:201,
-                message:err
-            })
-            return
-        }
-        if(result[0].length != 1){
-            res.json({
-                code:202,
-                message:"不存在"
-            })
-            return
-        }
-    
-        res.render('students/edit',{title:'编辑学生',students:result[0][0],majors:result[1],classes:result[2],departs:result[3]})
-    })
+    `, [id], function (err, result) {
+            if (err) {
+                res.json({
+                    code: 201,
+                    message: err
+                })
+                return
+            }
+            if (result[0].length != 1) {
+                res.json({
+                    code: 202,
+                    message: "不存在"
+                })
+                return
+            }
+
+            res.render('students/edit', { title: '编辑学生', students: result[0][0], majors: result[1], classes: result[2], departs: result[3] })
+        })
 })
 
-router.post('/edit',checkLogin,function(req,res,next){
+router.post('/edit', checkLogin, function (req, res, next) {
     var id = req.body.id;
     var sno = req.body.sno;
     var name = req.body.name;
@@ -191,40 +189,98 @@ router.post('/edit',checkLogin,function(req,res,next){
         })
         return;
     }
-    pool.query('SELECT * from students where id = ?',[id],function(err,result){
-        if(err){
+    pool.query('SELECT * from students where id = ?', [id], function (err, result) {
+        if (err) {
             res.json({
-                code:201,
-                message:"数据库操作失败"
+                code: 201,
+                message: "数据库操作失败"
             })
             return
         }
 
-        if(result.length != 1){
+        if (result.length != 1) {
             res.json({
-                code:202,
-                message:"未知错误"
+                code: 202,
+                message: "未知错误"
             })
             return;
         }
         var sql = `UPDATE students SET sno = ?,name = ?,sex = ?, birthday = ?,card =?,majorId = ?,classId=?,departId=?,nativePlace=?,address=?,qq=?,phone=?,email=?,updateTime=?,UpdateUserId=? where id = ? `
-        var data =[sno,name,sex,birthday,card,majorId,classId,departId,nativePlace,address,qq,phone,email,new Date(),req.session.user.id,id]
-        pool.query(sql,data,function(err,result){
-            if(err){
+        var data = [sno, name, sex, birthday, card, majorId, classId, departId, nativePlace, address, qq, phone, email, new Date(), req.session.user.id, id]
+        pool.query(sql, data, function (err, result) {
+            if (err) {
                 res.json({
-                    code:201,
-                    message:"数据操作失败"
+                    code: 201,
+                    message: "数据操作失败"
                 })
                 return;
             }
-            
-            
+
+
             res.json({
-                code:200,
-                message:"修改成功"
+                code: 200,
+                message: "修改成功"
             })
         })
     })
 })
 
+router.get('/delete/:id', checkLogin, function (req, res, next) {
+    var id = req.params.id
+    if (!id) {
+        res.json({
+            code: 201,
+            message: "学生不存在"
+        })
+        return;
+    }
+    pool.query(`UPDATE students set status = 1 where id = ?`, [id], function (err, result) {
+        if (err) {
+            res.json({
+                code: 201,
+                message: "数据库操作失败"
+            })
+            return;
+        }
+    var sql = `
+            SELECT s.id,
+            s.sno,
+            s.name,
+            s.sex,
+            s.birthday,
+            s.card,
+            s.majorId,
+            s.classId,
+            s.departId,
+            s.nativePlace,
+            s.address,
+            s.qq,
+            s.phone,
+            s.email,
+            s.status,
+            s.createTime,
+            s.createUserId,
+            s.updateTime,
+            s.updateUserId, 
+            d.name as departName, 
+            m.name as majorName, 
+            c.name as className, 
+            u1.loginName as createUserName, 
+            u2.loginName as updateUserName 
+            FROM students s
+            LEFT JOIN departments d ON s.departId = d.id
+            LEFT JOIN majors m ON s.majorId = m.id
+            LEFT JOIN classes c ON s.classId = c.id
+            LEFT JOIN users u1 ON s.createUserId = u1.id
+            LEFT JOIN users u2 ON s.updateUserId = u2.id
+            `;
+        pool.query(sql,function(err,result){
+            if(err){
+                res.json({code:201,message:"数据库操作失败"})
+                return
+            }
+            res.render('students/list', { title: '学生列表', students: result })
+        })
+    })
+})
 module.exports = router
