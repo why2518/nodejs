@@ -81,16 +81,16 @@
                 <th>院系</th>
                 <th>专业</th>
                 <th>班级</th>
-                <th>籍贯</th>
+                <!-- <th>籍贯</th>
                 <th>家庭地址</th>
                 <th>QQ</th>
                 <th>手机</th>
-                <th>邮箱</th>
+                <th>邮箱</th> -->
                 <th>状态</th>
-                <th>创建时间</th>
+                <!-- <th>创建时间</th>
                 <th>创建人</th>
                 <th>修改时间</th>
-                <th>修改人</th>
+                <th>修改人</th> -->
                 <th>操作</th>
             </tr>
             <%for(var i = 0;i<students.length;i++){%>
@@ -105,21 +105,21 @@
                 <td><%= formatDate(students[i].birthday,false)%></td>
                 <td><%= students[i].card%></td>
                 <td><%= students[i].majorName%></td>
-                <td><%= students[i].className%></td>
                 <td><%= students[i].departName%></td>
-                <td><%= students[i].nativePlace%></td>
+                <td><%= students[i].className%></td>
+                <!-- <td><%= students[i].nativePlace%></td>
                 <td><%= students[i].address%></td>
                 <td><%= students[i].qq%></td>
                 <td><%= students[i].phone%></td>
-                <td><%= students[i].email%></td>
+                <td><%= students[i].email%></td> -->
                 <td>
                     <%= students[i].status == 0?'正常':'删除'%>
                 </td>
-                <td><%= formatDate(students[i].createTime,true)%></td>
+                <!-- <td><%= formatDate(students[i].createTime,true)%></td>
                 <td><%= students[i].createUserName%></td>
                 <td><%= students[i].updateTimer%></td>
-                <td><%= students[i].updateUserName%></td>
-                <td></td>
+                <td><%= students[i].updateUserName%></td> -->
+                <td style="display: flex;justify-content:space-around"><a href="/students/edit/<%= students[i].id%>" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-pencil"></span>编辑</a><a href="/student/delete/<%= students[i].id%>" class="btn btn-success btn-xs" style="background-color: red;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
             </tr>
             <%}%>
             

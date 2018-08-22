@@ -1,7 +1,5 @@
-$('#btnSave').click(function (e) {
+$('#btnSave').click(function (e){
     e.preventDefault();
-    
-
     var sno = $.trim($('#sno').val());
     var name = $.trim($("#name").val());
     var birthday = $.trim($('#birthday').val())
@@ -11,13 +9,12 @@ $('#btnSave').click(function (e) {
         return;
     }
 
-
-    
     var data = {
-        sno: $('#sno').val(),
-        name: $('#name').val(),
+        id:$("input[type = 'hidden']").val(),
+        sno: sno,
+        name: name,
         sex: $('#sex').val(),
-        birthday: $('#birthday').val(),
+        birthday: birthday,
         card: $('#card').val(),
         majorId: 1,
         classId: 1,
@@ -28,13 +25,14 @@ $('#btnSave').click(function (e) {
         phone: $('#phone').val(),
         email: $('#email').val()
     }
-    $.post('/students/add', data, function (d) {
-        if(d.code != 200){
-            $('#myModal .modal-body').text(d.message);
+
+
+    $.post('/students/edit',data,function(data){
+        if(data.code != 200){
+            $('#myModal .modal-body').text(data.message);
             $('#myModal').modal();
             return;
         }
-        
         location.href = '/students/list'
     })
 })
