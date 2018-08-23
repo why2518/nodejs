@@ -1,1 +1,114 @@
 <% layout('layout') -%>
+    <style>
+        #search input,
+        #search select {
+            width: 150px;
+        }
+
+        #search label {
+            width: 80px;
+            text-align: center;
+        }
+
+        #search .form-group {
+            margin: 5px auto;
+        }
+    </style>
+    <div class="panel-group" id="search" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="title">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#search" href="#collapseSearch" aria-expanded="true" aria-controls="collapseSearch">
+                        查询条件：
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseSearch" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="title">
+                <div class="panel-body" style="padding: 0;">
+                    <!-- 表单位置 -->
+                    <form class="form-inline" action="/students/list">
+                        <div class="form-group">
+                            <label for="sno">学号:</label>
+                            <input type="text" class="form-control" id="sno" name="sno">
+                        </div>
+                        <div class="form-group">
+                            <label for="name">姓名:</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="sex">性别:</label>
+                            <select name="sex" id="sex" class="form-control">
+                                <option value="-1">全部</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="departId">院系:</label>
+                            <select name="departId" idepartIdd="departId" class="form-control">
+                                <option value="-1">全部</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="majorId">专业:</label>
+                            <select name="majorId" id="majorId" class="form-control">
+                                <option value="-1">全部</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classesId">班级:</label>
+                            <select name="classesId" id="classesId" class="form-control">
+                                <option value="-1">全部</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">状态:</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="-1">全部</option>
+                                <option value="0">正常</option>
+                                <option value="1">删除</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdayBegin">生日范围:</label>
+                            <input type="date" class="form-control" id="birthdayBegin" name="birthdayBegin">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdayEnd">生日范围:</label>
+                            <input type="date" class="form-control" id="birthdayEnd" name="birthdayEnd">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-left: 320px">
+                            <span style="margin-right: 10px" class="glyphicon glyphicon-search"></span>查询
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%
+    function formatDate(date, flag){
+        var date = new Date(date);
+        var y = date.getFullYear();
+        var M = date.getMonth() + 1;
+        var d = date.getDate();
+        var h = date.getHours();
+        var m = date.getMinutes();
+        var s = date.getSeconds();
+    
+        M = M < 10 ? '0' + M : M.toString();
+        d = d < 10 ? '0' + d : d.toString();
+        h = h < 10 ? '0' + h : h.toString();
+        m = m < 10 ? '0' + m : m.toString();
+        s = s < 10 ? '0' + s : s.toString();
+    
+        return flag ? `${y}-${M}-${d} ${h}:${m}:${s}` : `${y}-${M}-${d}`
+    }
+%>
+
+
+
+
+
+
+<% block('footer').append('<script src="/javascripts/teacher-list.js"></script>') -%>

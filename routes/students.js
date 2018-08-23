@@ -3,6 +3,7 @@ var router = express.Router()
 var pool = require('../modules/db.js');
 var md5 = require('md5');
 var checkLogin = require('../modules/checkLogin.js');
+var pager = require('../modules/pager');
 
 router.get('/add', checkLogin, function (req, res, next) {
     var sql = `
@@ -90,46 +91,114 @@ router.post('/add', checkLogin, function (req, res, next) {
 
 
 router.get('/list', checkLogin, function (req, res, next) {
-    var sql = `SELECT s.id,
-    s.sno,
-    s.name,
-    s.sex,
-    s.birthday,
-    s.card,
-    s.majorId,
-    s.classId,
-    s.departId,
-    s.nativePlace,
-    s.address,
-    s.qq,
-    s.phone,
-    s.email,
-    s.status,
-    s.createTime,
-    s.createUserId,
-    s.updateTime,
-    s.updateUserId, 
-    d.name as departName, 
-    m.name as majorName, 
-    c.name as className, 
-    u1.loginName as createUserName, 
-    u2.loginName as updateUserName 
-    FROM students s
+    var sql = `
+    SELECT * FROM majors WHERE status = 0;
+    SELECT * FROM classes WHERE status = 0;
+    SELECT * FROM departments WHERE status = 0;
+    SELECT COUNT(*) as totalCount from students;
+    SELECT s.id,s.sno,s.name,s.sex,s.birthday,s.card,s.majorId,s.classId,s.departId,s.nativePlace,s.address,s.qq,s.phone,s.email,s.status,s.createTime,s.createUserId,s.updateTime,s.updateUserId, d.name as departName, m.name as majorName, c.name as className, u1.loginName as createUserName, u2.loginName as updateUserName FROM students s
     LEFT JOIN departments d ON s.departId = d.id
     LEFT JOIN majors m ON s.majorId = m.id
     LEFT JOIN classes c ON s.classId = c.id
     LEFT JOIN users u1 ON s.createUserId = u1.id
-    LEFT JOIN users u2 ON s.updateUserId = u2.id
-    `;
+    LEFT JOIN users u2 ON s.updateUserId = u2.id WHERE (1=1)`;
+
+    var sno = req.query.sno;
+    var name = req.query.name;
+    var sex = req.query.sex;
+    var majorId = req.query.majorId;
+    var classId = req.query.classId;
+    var departId = req.query.departId;
+    var status = req.query.status;
+    var birthdayBegin = req.query.birthdayBegin;
+    var birthdayEnd = req.query.birthdayEnd;
+
+    console.log(majorId)
+    if (sno) {
+        sql += ` AND s.sno like '%${sno}%'`;
+    }
+    if (name) {
+        sql += ` AND s.name like '%${name}%'`;
+    }
+    if (sex && sex != -1) {
+        sql += ` AND s.sex='${sex}'`;
+    }
+    if (majorId && majorId != -1) {
+        sql += ` AND s.majorId='${majorId}'`;
+    }
+    if (classId && classId != -1) {
+        sql += ` AND s.classId='${classId}'`;
+    }
+    if (departId && departId != -1) {
+        sql += ` AND s.departId='${departId}'`;
+    }
+    if (status && status != -1) {
+        sql += ` AND s.status='${status}'`;
+    }
+    if (birthdayBegin && birthdayEnd) {
+        try {
+            var begin = new Date(birthdayBegin);
+            var end = new Date(birthdayEnd);
+
+            if (begin >= end) {
+                sql += ` AND s.birthday>='${birthdayEnd}' AND s.birthday<='${birthdayBegin}'`;
+            } else {
+                sql += ` AND s.birthday>='${birthdayBegin}' AND s.birthday<='${birthdayEnd}'`;
+            }
+        } catch (error) {
+            res.json({ code: 201, message: '日期输入有误！' });
+            return;
+        }
+    } else {
+        if (birthdayBegin) {
+            sql += ` AND s.birthday>='${birthdayBegin}'`;
+        }
+        if (birthdayEnd) {
+            sql += ` AND s.birthday<='${birthdayEnd}'`;
+        }
+    }
+
+    //分页
+    var page = req.query.page || 1;
+    page = page -0;
+    var pageSize = 10;
+    
+
+    sql += ` LIMIT ${(page-1) * pageSize},${pageSize}`
+
+
     pool.query(sql, function (err, result) {
         if (err) {
             res.json({
                 code: 201,
-                message: "数据库操作失败"
+                message: err
             })
             return
         }
-        res.render('students/list', { title: '学生列表', students: result })
+        //当前表中总数据数
+        var totalCount = result[3][0].totalCount
+        var totalPage = Math.ceil(totalCount/10)
+        console.log(              page,       //当前页数
+            pages,      //显示的页码范围
+            pageSize,   //每页显示个数
+            totalPage,  //总页数
+            totalCount)
+
+        var pages = pager(page, totalPage);
+        res.render('students/list', { 
+            title: '学生列表',
+            students: result[4],
+            majors: result[0],
+            classes: result[1],
+            departs: result[2],
+            pageInfo:{
+                page,       //当前页数
+                pages,      //显示的页码范围
+                pageSize,   //每页显示个数
+                totalPage,  //总页数
+                totalCount  //总记录数
+            }
+         })
     })
 })
 
@@ -225,8 +294,9 @@ router.post('/edit', checkLogin, function (req, res, next) {
     })
 })
 
-router.get('/delete/:id', checkLogin, function (req, res, next) {
-    var id = req.params.id
+router.post('/remove', checkLogin, function (req, res, next) {
+    var id = req.body.id
+    console.log(id)
     if (!id) {
         res.json({
             code: 201,
@@ -242,45 +312,27 @@ router.get('/delete/:id', checkLogin, function (req, res, next) {
             })
             return;
         }
-    var sql = `
-            SELECT s.id,
-            s.sno,
-            s.name,
-            s.sex,
-            s.birthday,
-            s.card,
-            s.majorId,
-            s.classId,
-            s.departId,
-            s.nativePlace,
-            s.address,
-            s.qq,
-            s.phone,
-            s.email,
-            s.status,
-            s.createTime,
-            s.createUserId,
-            s.updateTime,
-            s.updateUserId, 
-            d.name as departName, 
-            m.name as majorName, 
-            c.name as className, 
-            u1.loginName as createUserName, 
-            u2.loginName as updateUserName 
-            FROM students s
-            LEFT JOIN departments d ON s.departId = d.id
-            LEFT JOIN majors m ON s.majorId = m.id
-            LEFT JOIN classes c ON s.classId = c.id
-            LEFT JOIN users u1 ON s.createUserId = u1.id
-            LEFT JOIN users u2 ON s.updateUserId = u2.id
-            `;
-        pool.query(sql,function(err,result){
-            if(err){
-                res.json({code:201,message:"数据库操作失败"})
-                return
-            }
-            res.render('students/list', { title: '学生列表', students: result })
+        res.json({
+            code:200,
+            message:"删除成功"
         })
+    })
+})
+
+router.post('/multiRemove', checkLogin, function (req, res, next) {
+    var ids = req.body.ids;
+    console.log(ids)
+    if (!ids) {
+        res.json({ code: 201, message: '参数错误！' });
+        return;
+    }
+    pool.query(`UPDATE students SET status = 1 WHERE id in (${ids})`, function (err, result) {
+        if (err) {
+            res.json({ code: 201, message: "数据库操作异常" });
+            return;
+        }
+
+        res.json({ code: 200, message: '批量删除成功！' });
     })
 })
 module.exports = router
