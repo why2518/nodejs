@@ -113,7 +113,6 @@ router.get('/list', checkLogin, function (req, res, next) {
     var birthdayBegin = req.query.birthdayBegin;
     var birthdayEnd = req.query.birthdayEnd;
 
-    console.log(majorId)
     if (sno) {
         sql += ` AND s.sno like '%${sno}%'`;
     }
